@@ -1,0 +1,6 @@
+@BioUnlockServer_HostAddress = http://localhost:5017
+
+GET {{BioUnlockServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
