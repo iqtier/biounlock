@@ -24,3 +24,55 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes biometric-scan {
+  0% {
+    top: 5%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    top: 95%;
+    opacity: 0;
+  }
+}
+
+@keyframes biometric-ripple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes biometric-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+.animate-biometric-scan {
+  animation: biometric-scan 2s ease-in-out infinite alternate;
+}
+
+.animate-biometric-ripple {
+  animation: biometric-ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-biometric-glow {
+  animation: biometric-glow 3s ease-in-out infinite;
+}
+

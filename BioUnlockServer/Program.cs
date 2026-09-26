@@ -8,11 +8,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+
+// Configure Kestrel (the built-in ASP.NET Core web server) to use our
+// mkcert-generated certificate instead of the default dev certificate,
+// so devices on our home network (like the phone) will trust the connection.
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(7159, listenOptions =>
+    {
+        listenOptions.UseHttps("192.168.2.181.sslip.io+2.p12", "changeit");
+    });
+});
 builder.Services.AddFido2(options =>
 {
-    options.RPID = "localhost";
+
     options.RPName = "Fido2 Test Server";
-    options.Origins = new HashSet<string> { "http://localhost:3000" };
+    options.RPID = "192.168.2.181.sslip.io";
+    options.Origins = new HashSet<string> { "https://192.168.2.181.sslip.io:3000" };
     options.TimestampDriftTolerance = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 });
 
@@ -26,16 +38,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        policy.WithOrigins("https://192.168.2.181.sslip.io:3000")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials();
     });
 });
 var app = builder.Build();
 app.UseSession();
 app.UseCors("AllowNextApp");
-
+app.UseHttpsRedirection();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
