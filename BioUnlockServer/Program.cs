@@ -153,7 +153,7 @@ app.MapPost("/login/begin", (HttpContext http, IFido2 fido2) =>
 
 // Verifies the signed response the phone sent back, proving it holds
 // the private key that matches a credential we registered earlier.
-app.MapPost("/login/complete", async (HttpContext http, IFido2 fido2, AuthenticatorAssertionRawResponse clientResponse) =>
+app.MapPost("/login/complete", async (HttpContext http, IFido2 fido2, string? sessionCode, AuthenticatorAssertionRawResponse clientResponse) =>
 {
     // Retrieve and remove the challenge we saved in /login/begin.
     var jsonOptions = http.Session.GetString("fido2.assertionOptions");
@@ -196,13 +196,34 @@ app.MapPost("/login/complete", async (HttpContext http, IFido2 fido2, Authentica
 
     // Update the sign count to guard against replayed/cloned credentials.
     storedCred.SignCount = result.SignCount;
-
+    // If this login was tied to a PC waiting on a session code,
+    // mark that session confirmed so the PC's polling picks it up.
+    if (!string.IsNullOrEmpty(sessionCode))
+    {
+        SessionStore.Sessions[sessionCode] = "confirmed";
+    }
     return Results.Json(new { status = "unlocked" });
+});
+
+// Starts a new login attempt. Returns a short code the user will
+// type into their phone, linking the PC's wait with the phone's confirmation.
+app.MapPost("/session/start", () =>
+{
+    // Random.Shared (a built-in, thread-safe random number generator;
+    // "Shared" means one instance the whole app reuses, instead of
+    // creating a new Random object every time, which is wasteful and
+    // can even produce duplicate numbers if done too quickly).
+    var code = Random.Shared.Next(1000, 9999).ToString();
+    SessionStore.Sessions[code] = "pending";
+    return Results.Json(new { code });
+});
+
+// Lets the PC repeatedly ask "has this code been confirmed yet?"
+app.MapGet("/session/status/{code}", (string code) =>
+{
+    var status = SessionStore.Sessions.GetValueOrDefault(code, "unknown");
+    return Results.Json(new { status });
 });
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
