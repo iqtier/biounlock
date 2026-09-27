@@ -200,7 +200,16 @@ app.MapPost("/login/complete", async (HttpContext http, IFido2 fido2, string? se
     // mark that session confirmed so the PC's polling picks it up.
     if (!string.IsNullOrEmpty(sessionCode))
     {
+        // Only mark confirmed if this code was actually started by a PC,
+    // not just any random string someone typed in.
+    if (SessionStore.Sessions.ContainsKey(sessionCode))
+    {
         SessionStore.Sessions[sessionCode] = "confirmed";
+    }
+    else
+    {
+        return Results.BadRequest(new { error = "Invalid or expired session code" });
+    }
     }
     return Results.Json(new { status = "unlocked" });
 });
