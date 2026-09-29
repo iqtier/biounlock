@@ -14,7 +14,7 @@ builder.Services.AddFido2(options =>
 {
 
     options.RPName = "Fido2 Test Server";
-    options.RPID = "pc-biounlock-bjefhgd0d0afdtb6.mexicocentral-01.azurewebsites.net";
+    options.RPID = "biounlock.vercel.app";
     options.Origins = new HashSet<string> { "https://biounlock.vercel.app" };
     options.TimestampDriftTolerance = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 });

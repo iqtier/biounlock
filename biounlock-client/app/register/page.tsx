@@ -30,7 +30,10 @@ export default function RegisterPage() {
   const [status, setStatus] = useState("");
 
   async function handleRegister() {
+
+    try {
     setStatus("Requesting challenge...");
+     setStatus("Requesting challenge...");
 
     // Ask the server to generate a new WebAuthn registration challenge.
     const beginRes = await fetch(`${SERVER_URL}/register/begin`, {
@@ -82,6 +85,10 @@ export default function RegisterPage() {
 
     const result = await completeRes.json();
     setStatus(JSON.stringify(result));
+  } catch (err) {
+    setStatus("Error: " + (err as Error).message);
+  }
+   
   }
 
   return (
