@@ -9,22 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 
-// Configure Kestrel (the built-in ASP.NET Core web server) to use our
-// mkcert-generated certificate instead of the default dev certificate,
-// so devices on our home network (like the phone) will trust the connection.
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(7159, listenOptions =>
-    {
-        listenOptions.UseHttps("192.168.2.181.sslip.io+2.p12", "changeit");
-    });
-});
+
 builder.Services.AddFido2(options =>
 {
 
     options.RPName = "Fido2 Test Server";
-    options.RPID = "192.168.2.181.sslip.io";
-    options.Origins = new HashSet<string> { "https://192.168.2.181.sslip.io:3000" };
+    options.RPID = "pc-biounlock-bjefhgd0d0afdtb6.mexicocentral-01.azurewebsites.net";
+    options.Origins = new HashSet<string> { "https://biounlock.vercel.app" };
     options.TimestampDriftTolerance = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 });
 
@@ -38,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextApp", policy =>
     {
-        policy.WithOrigins("https://192.168.2.181.sslip.io:3000")
+        policy.WithOrigins("https://biounlock.vercel.app")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 // This is your ASP.NET Core server's address. Since we're testing over
-// your home network (needed so your phone can reach it too), this uses
-// the sslip.io hostname trick instead of "localhost".
-const SERVER_URL = "https://192.168.2.181.sslip.io:7159";
+
+const SERVER_URL = "https://pc-biounlock-bjefhgd0d0afdtb6.mexicocentral-01.azurewebsites.net";
 
 // WebAuthn sends binary data (like the challenge) as base64url text in JSON,
 // but the browser's WebAuthn API needs raw binary. This converts text back to binary.

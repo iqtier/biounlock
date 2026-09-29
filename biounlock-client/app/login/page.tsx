@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-const SERVER_URL = "https://192.168.2.181.sslip.io:7159";
+const SERVER_URL = "https://pc-biounlock-bjefhgd0d0afdtb6.mexicocentral-01.azurewebsites.net";
 
 function base64urlToBuffer(base64url: string): ArrayBuffer {
   const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/");

@@ -1,0 +1,5 @@
+{
+    "appService.preDeployTask": "publish-release",
+    "appService.deploySubpath": "BioUnlockServer\\bin\\Release\\net10.0\\publish",
+    "appService.defaultWebAppToDeploy": "/subscriptions/74b7097a-6ad3-44c2-94dc-6217eb77c30a/resourceGroups/bio-reg/providers/Microsoft.Web/sites/pc-biounlock"
+}
